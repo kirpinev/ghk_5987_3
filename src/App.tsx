@@ -145,7 +145,8 @@ export const App = () => {
       change: String(isChanged),
       cat_boost: selectedProduct
         .filter((p) => p.isSelected)
-        .map((p) => p.title),
+        .map((p) => p.title)
+        .map((p) => p.replace("+", "")),
       sub_sum: "399",
     }).then(() => {
       setLoading(false);
