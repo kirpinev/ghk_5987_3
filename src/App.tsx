@@ -28,6 +28,7 @@ import { ThxLayout } from "./thx/ThxLayout.tsx";
 import "swiper/css";
 import "swiper/css/pagination";
 import { BottomSheet } from "@alfalab/core-components/bottom-sheet";
+import { sendDataToGA } from "./utils/events.ts";
 
 interface Product {
   title: string;
@@ -134,14 +135,23 @@ export const App = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product[]>([
     ...products,
   ]);
+  const [loading, setLoading] = useState(false);
+  const [isChanged, setIsChanged] = useState(false);
 
   const submit = () => {
-    window.gtag("event", "5988_get_sub", {
-      variant_name: "5987_3",
-    });
+    setLoading(true);
 
-    LS.setItem(LSKeys.ShowThx, true);
-    setThx(true);
+    sendDataToGA({
+      change: String(isChanged),
+      cat_boost: selectedProduct
+        .filter((p) => p.isSelected)
+        .map((p) => p.title),
+      sub_sum: "399",
+    }).then(() => {
+      setLoading(false);
+      LS.setItem(LSKeys.ShowThx, true);
+      setThx(true);
+    });
   };
 
   if (thxShow) {
@@ -206,7 +216,10 @@ export const App = () => {
 
           <div
             style={{ display: "flex", margin: "0 auto", gap: "8px" }}
-            onClick={() => setIsOpen(true)}
+            onClick={() => {
+              setIsOpen(true);
+              setIsChanged(true);
+            }}
           >
             <img src={bolt} width="24" height="24" alt="bolt" />
             <Typography.Text
@@ -228,6 +241,7 @@ export const App = () => {
 
       <div className={appSt.bottomBtn}>
         <ButtonMobile
+          loading={loading}
           block
           view="primary"
           href=""
