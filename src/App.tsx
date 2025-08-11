@@ -58,7 +58,7 @@ const products: Array<Product> = [
   },
   {
     title: "Бесплатная мобильная связь",
-    text: "от Альфа Мобайл",
+    text: "От Альфа Мобайл",
     image: sim,
     isSelected: true,
   },
